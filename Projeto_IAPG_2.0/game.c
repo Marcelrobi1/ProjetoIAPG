@@ -4,7 +4,7 @@
 #include <string.h>
 #include <time.h>
 
-void init_game(GameState *game, int num_players) {
+void init_game(GameState *game, int num_players, int num_humans) {
   game->game_id = (int)time(NULL); // Simple ID
   game->board_count = 0;
   game->board_left_end = -1;
@@ -24,10 +24,15 @@ void init_game(GameState *game, int num_players) {
     sprintf(game->players[i].name, "Player %d", i + 1);
     game->players[i].hand_count = 0;
     game->players[i].score = 0;
-    game->players[i].is_human =
-        (i == 0); // Default first player human, others AI? Or config driven.
-    // Simplified: All AI except maybe player 1 for now, or all human locally?
-    // Requirement says "human vs AI", so let's default p1 human, others AI.
+    game->players[i].is_human = (i < num_humans);
+    // The user requirement says: "escolher a quantidade de jogadores".
+    // "não quero jogar contra uma inteligência generativa mas sim com outra
+    // pessoa". So if 2 players selected, both human. If we want AI, we'd need a
+    // separate menu. For now, let's assume all players in 'num_players' are
+    // human if intended for hotseat. BUT, we might want to support "1 Player vs
+    // AI". Let's add a parameter `int num_humans`. Simplified: All AI except
+    // maybe player 1 for now, or all human locally? Requirement says "human vs
+    // AI", so let's default p1 human, others AI.
   }
 
   distribute_pieces(game);
@@ -122,12 +127,19 @@ int play_piece(GameState *game, int player_idx, int piece_idx, int side) {
       int new_end = -1;
 
       if (piece.side2 == game->board_left_end) {
+        // [s1|s2] -> matches s2 to Left. Visual: [s1|s2] [Left..]. Correct.
         connected_val = piece.side2;
         new_end = piece.side1;
       } else if (piece.side1 == game->board_left_end) {
-        connected_val = piece.side1;
-        new_end = piece.side2;
-        // visually flip? logic handles value.
+        // [s1|s2] -> matches s1 to Left. Visual: [s1|s2] [Left..].
+        // We want s2 to be the connecting side for Left play (Right side of
+        // piece touches board). So we swap.
+        int temp = piece.side1;
+        piece.side1 = piece.side2;
+        piece.side2 = temp;
+
+        connected_val = piece.side2; // Now s2 is the old s1
+        new_end = piece.side1;
       } else {
         return 0; // Invalid
       }
@@ -136,7 +148,7 @@ int play_piece(GameState *game, int player_idx, int piece_idx, int side) {
       for (int i = game->board_count; i > 0; i--) {
         game->board[i] = game->board[i - 1];
       }
-      game->board[0] = piece; // Ideally store orientation too
+      game->board[0] = piece;
       game->board_count++;
       game->board_left_end = new_end;
 
@@ -144,9 +156,16 @@ int play_piece(GameState *game, int player_idx, int piece_idx, int side) {
       // Must match board_right_end
       int new_end = -1;
       if (piece.side1 == game->board_right_end) {
+        // [...Right] [s1|s2]. Correct.
         new_end = piece.side2;
       } else if (piece.side2 == game->board_right_end) {
-        new_end = piece.side1;
+        // [...Right] [s1|s2]. Matches s2.
+        // We want s1 to connect. Swap.
+        int temp = piece.side1;
+        piece.side1 = piece.side2;
+        piece.side2 = temp;
+
+        new_end = piece.side2; // new exposed is old s1
       } else {
         return 0; // Invalid
       }

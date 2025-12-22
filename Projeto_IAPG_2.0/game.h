@@ -27,7 +27,7 @@ typedef struct {
 } GameState;
 
 // Function prototypes
-void init_game(GameState *game, int num_players);
+void init_game(GameState *game, int num_players, int num_humans);
 int can_play_piece(const GameState *game, DominoPiece piece,
                    int *side_to_match);
 int play_piece(GameState *game, int player_idx, int piece_idx, int side);

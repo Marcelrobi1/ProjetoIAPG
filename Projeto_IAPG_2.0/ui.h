@@ -11,6 +11,9 @@ void display_message(const char *msg);
 int get_user_input_move(
     int *piece_idx,
     int *side); // Returns 1 if valid syntax, 0 if escape/invalid
+// Returns 1 if valid syntax, 0 if escape/invalid
 void wait_for_key();
+int get_player_count();
+int show_mode_menu();
 
 #endif // UI_H

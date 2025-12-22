@@ -1,0 +1,12 @@
+ID do Jogo: 1766439656
+Indice Vencedor: 1
+Vencedor: Player 2
+Player 1 Pontos: 0
+Player 2 Pontos: 0
+--------------------------
+ID do Jogo: 1766440326
+Indice Vencedor: 0
+Vencedor: Player 1
+Player 1 Pontos: 0
+Player 2 Pontos: 25
+--------------------------

@@ -20,8 +20,22 @@ int main() {
       running = 0;
     } else if (choice == 1) {
       // New Game
+      int mode = show_mode_menu(); // 1=PvAI, 2=PvP
+      int num_p = 2;
+      int humans = 1;
+
+      if (mode == 2) {
+        num_p = get_player_count();
+        humans = num_p;
+      } else {
+        // AI Mode default 2 players (1 human 1 AI) or ask?
+        // Simplification: 1 vs 1 AI.
+        num_p = 2;
+        humans = 1;
+      }
+
       GameState game;
-      init_game(&game, 2);
+      init_game(&game, num_p, humans);
 
       int game_running = 1;
       while (game_running) {
@@ -120,13 +134,14 @@ int main() {
         if (game.winner_index != -1) {
           draw_game_state(&game); // Show final
           char win_msg[50];
-          sprintf(win_msg, "%s Venceu!", game.players[game.winner_index].name);
-          display_message(win_msg);
-
           // Save history
           save_history_binary(&game, "historico_jogos.dat");
           save_history_text(&game, "historico_jogos.txt");
-          display_message("Jogo Salvo.");
+
+          char final_msg[100];
+          sprintf(final_msg, "%s Venceu! (Jogo Salvo)",
+                  game.players[game.winner_index].name);
+          display_message(final_msg);
 
           wait_for_key();
           game_running = 0;

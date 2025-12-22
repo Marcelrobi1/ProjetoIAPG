@@ -77,7 +77,9 @@ void draw_game_state(const GameState *game) {
 }
 
 void display_message(const char *msg) {
-  mvprintw(LINES - 2, 2, "MSG: %s", msg);
+  move(LINES - 2, 2);
+  clrtoeol();
+  printw("MSG: %s", msg);
   refresh();
 }
 
@@ -110,9 +112,33 @@ int get_user_input_move(int *piece_idx, int *side) {
     if (p == 0)
       return 2; // Pass
     *piece_idx = p - 1;
-    *side = 1; // Try left/auto?
+    *side = 1; // Default Left (User must specify R if needed)
     return 1;
   }
 
   return 0; // Invalid
+}
+
+int get_player_count() {
+  echo();
+  mvprintw(LINES - 5, 2, "Numero de jogadores (2-4): ");
+  char buf[10];
+  getnstr(buf, 9);
+  noecho();
+  int n = atoi(buf);
+  if (n < 2)
+    n = 2;
+  if (n > 4)
+    n = 4;
+  return n;
+}
+
+int show_mode_menu() {
+  clear();
+  mvprintw(2, 2, "MODO DE JOGO");
+  mvprintw(4, 2, "1. Jogador vs AI");
+  mvprintw(5, 2, "2. Jogador vs Jogador (Hotseat)");
+  mvprintw(7, 2, "Escolha: ");
+  int ch = getch();
+  return ch - '0';
 }
