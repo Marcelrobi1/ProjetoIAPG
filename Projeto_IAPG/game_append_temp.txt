@@ -1,0 +1,19 @@
+
+int draw_piece(GameState* game, int player_idx) {
+    if (game->boneyard_count <= 0) return 0; // Empty
+    
+    Player* p = &game->players[player_idx];
+    if (p->hand_count >= MAX_HAND_SIZE) return 0; // Hand full?
+    
+    // Take from front
+    p->hand[p->hand_count] = game->boneyard[0];
+    p->hand_count++;
+    
+    // Shift boneyard
+    for (int i = 0; i < game->boneyard_count - 1; i++) {
+        game->boneyard[i] = game->boneyard[i+1];
+    }
+    game->boneyard_count--;
+    
+    return 1;
+}
