@@ -14,8 +14,8 @@ typedef struct {
   int boneyard_count;
 
   DominoPiece board[DECK_SIZE];
-  int board_left_end;  // The value exposed on the left
-  int board_right_end; // The value exposed on the right
+  int board_left_end;  // O valor exposto à esquerda
+  int board_right_end; // O valor exposto à direita
   int board_count;
 
   Player players[MAX_PLAYERS];
@@ -23,7 +23,7 @@ typedef struct {
   int current_player_index;
   GameConfig config;
 
-  int winner_index; // -1 if no winner yet
+  int winner_index; // -1 se ainda não há vencedor
 } GameState;
 
 // Function prototypes

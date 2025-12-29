@@ -4,7 +4,7 @@
 typedef struct {
     int side1;
     int side2;
-    int is_double; // 1 if side1 == side2, 0 otherwise
+    int is_double; // 1 se side1 == side2, 0 caso contrário
 } DominoPiece;
 
 // Function prototypes

@@ -1,6 +1,7 @@
 #include "ui.h"
 #include <curses.h>
 #include <string.h>
+#include <stdlib.h>
 
 void init_ui() {
   initscr();
@@ -8,15 +9,23 @@ void init_ui() {
   noecho();
   keypad(stdscr, TRUE);
   start_color();
-  init_pair(1, COLOR_WHITE, COLOR_BLUE);   // Background
-  init_pair(2, COLOR_YELLOW, COLOR_BLACK); // Highlight
+  init_pair(1, COLOR_WHITE, COLOR_BLUE);   // Fundo
+  init_pair(2, COLOR_YELLOW, COLOR_BLACK); // Destaque
+  // Pares de cores para números de dominó 0-6
+  init_pair(3, COLOR_RED, COLOR_BLACK);     // 0
+  init_pair(4, COLOR_GREEN, COLOR_BLACK);   // 1
+  init_pair(5, COLOR_YELLOW, COLOR_BLACK);  // 2
+  init_pair(6, COLOR_BLUE, COLOR_BLACK);    // 3
+  init_pair(7, COLOR_MAGENTA, COLOR_BLACK); // 4
+  init_pair(8, COLOR_CYAN, COLOR_BLACK);    // 5
+  init_pair(9, COLOR_WHITE, COLOR_BLACK);   // 6
 }
 
 void close_ui() { endwin(); }
 
 int show_main_menu() {
   clear();
-  mvprintw(2, 2, "DOMINO MUGGINS (FIVE-UP)");
+  mvprintw(2, 2, "JOGO DE DOMINO");
   mvprintw(4, 2, "1. Iniciar Novo Jogo");
   mvprintw(5, 2, "2. Carregar Jogo (Nao Impl)");
   mvprintw(6, 2, "3. Regras/Ajuda");
@@ -29,7 +38,15 @@ int show_main_menu() {
 }
 
 void draw_domino(int y, int x, DominoPiece p) {
-  mvprintw(y, x, "[%d|%d]", p.side1, p.side2);
+  mvprintw(y, x, "[");
+  attron(COLOR_PAIR(p.side1 + 3));
+  printw("%d", p.side1);
+  attroff(COLOR_PAIR(p.side1 + 3));
+  printw("|");
+  attron(COLOR_PAIR(p.side2 + 3));
+  printw("%d", p.side2);
+  attroff(COLOR_PAIR(p.side2 + 3));
+  printw("]");
 }
 
 void draw_game_state(const GameState *game) {
@@ -64,9 +81,16 @@ void draw_game_state(const GameState *game) {
     mvprintw(y_off, 2, "Sua Mao (%s):", game->players[p_idx].name);
     y_off++;
     for (int i = 0; i < game->players[p_idx].hand_count; i++) {
-      mvprintw(y_off, 2 + (i * 8), "%d:[%d|%d]", i + 1,
-               game->players[p_idx].hand[i].side1,
-               game->players[p_idx].hand[i].side2);
+      move(y_off, 2 + (i * 8));
+      printw("%d:[", i + 1);
+      attron(COLOR_PAIR(game->players[p_idx].hand[i].side1 + 3));
+      printw("%d", game->players[p_idx].hand[i].side1);
+      attroff(COLOR_PAIR(game->players[p_idx].hand[i].side1 + 3));
+      printw("|");
+      attron(COLOR_PAIR(game->players[p_idx].hand[i].side2 + 3));
+      printw("%d", game->players[p_idx].hand[i].side2);
+      attroff(COLOR_PAIR(game->players[p_idx].hand[i].side2 + 3));
+      printw("]");
     }
   } else {
     y_off += 2;
@@ -92,10 +116,14 @@ void wait_for_key() {
 int get_user_input_move(int *piece_idx, int *side) {
   echo();
   mvprintw(LINES - 3, 2,
-           "Insira jogada (Peca# Lado[L/R]) (ex: 1 L) ou 0 para passar: ");
+           "Insira jogada (Peca# Lado[L/R]) (ex: 1 L), 0 para passar, 'q' para menu: ");
   char buf[10];
   getnstr(buf, 9);
   noecho();
+
+  if (strcmp(buf, "q") == 0 || strcmp(buf, "Q") == 0) {
+    return 3; // Quit to menu
+  }
 
   int p;
   char s;
@@ -141,4 +169,35 @@ int show_mode_menu() {
   mvprintw(7, 2, "Escolha: ");
   int ch = getch();
   return ch - '0';
+}
+
+void get_player_name(char *name, int player_num) {
+  clear();
+  mvprintw(2, 2, "Nome do Jogador %d: ", player_num);
+  echo();
+  mvgetstr(4, 2, name);
+  noecho();
+  if (strlen(name) == 0) {
+    strcpy(name, "Jogador");
+  }
+}
+
+void show_rules() {
+  clear();
+  mvprintw(1, 2, "REGRAS DO JOGO - Domino Muggins");
+  mvprintw(3, 2, "Objetivo: Ser o primeiro a esvaziar a mao ou ter a menor pontuacao.");
+  mvprintw(4, 2, "Como Jogar:");
+  mvprintw(5, 2, "1. Cada jogador recebe 5 pecas.");
+  mvprintw(6, 2, "2. O jogador com a dupla mais alta comeca.");
+  mvprintw(7, 2, "3. Coloque pecas conectando numeros iguais nos extremos.");
+  mvprintw(8, 2, "4. Se nao puder jogar, compre do baralho.");
+  mvprintw(9, 2, "5. Ganha quem esvaziar a mao primeiro.");
+  mvprintw(10, 2, "6. Pontuacao: Multiplos de 5 contam pontos.");
+  mvprintw(12, 2, "Controles:");
+  mvprintw(13, 2, "- Digite 'indice L/R' para jogar (ex: 1 L)");
+  mvprintw(14, 2, "- Digite 0 para passar se nao puder jogar.");
+  mvprintw(15, 2, "- Digite 'q' para voltar ao menu principal.");
+  mvprintw(17, 2, "Pressione qualquer tecla para voltar...");
+  refresh();
+  getch();
 }

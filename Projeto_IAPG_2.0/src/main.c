@@ -18,24 +18,23 @@ int main() {
     int choice = show_main_menu();
     if (choice == 4) {
       running = 0;
+    } else if (choice == 3) {
+      show_rules();
     } else if (choice == 1) {
       // New Game
       int mode = show_mode_menu(); // 1=PvAI, 2=PvP
-      int num_p = 2;
-      int humans = 1;
-
-      if (mode == 2) {
-        num_p = get_player_count();
-        humans = num_p;
-      } else {
-        // AI Mode default 2 players (1 human 1 AI) or ask?
-        // Simplification: 1 vs 1 AI.
-        num_p = 2;
-        humans = 1;
-      }
+      int num_p = get_player_count();
+      int humans = (mode == 1) ? 1 : num_p;
 
       GameState game;
       init_game(&game, num_p, humans);
+
+      // Get names for human players
+      for (int i = 0; i < num_p; i++) {
+        if (game.players[i].is_human) {
+          get_player_name(game.players[i].name, i + 1);
+        }
+      }
 
       int game_running = 1;
       while (game_running) {
@@ -74,7 +73,12 @@ int main() {
             int p_idx_input, side;
             int valid_input = get_user_input_move(&p_idx_input, &side);
 
-            if (valid_input == 2) {
+            if (valid_input == 3) {
+              display_message("Voltando ao menu...");
+              napms(500);
+              game_running = 0;
+              continue;
+            } else if (valid_input == 2) {
               display_message("Voce tem jogadas validas! Nao pode passar.");
               wait_for_key();
               continue;

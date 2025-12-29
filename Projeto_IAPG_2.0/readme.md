@@ -10,15 +10,15 @@ Esta aplicação implementa o jogo do Dominó na variante Muggins (semelhante ao
 
 ### Como Compilar
 ```bash
-gcc main.c game.c domino.c player.c config.c ui.c storage.c -o domino -lncurses
+gcc src/main.c src/game.c src/domino.c src/player.c src/config.c src/ui.c src/storage.c -o domino -I./include -I./lib/pdcurses -L./lib/pdcurses -lpdcurses
 ```
-Nota: Em Windows, pode ser necessário especificar caminhos para include e lib do pdcurses.
+Nota: Em Windows, use o script `compile_windows.bat` que configura os caminhos automaticamente.
 
 ### Instalação Windows (Detalhada)
 1. Baixe o **PDCurses** (versão para MinGW/GCC se estiver usando esses compiladores).
    - Sugestão: Procure por "PDCurses binaries for MinGW" ou compile a partir do código fonte.
    - Alternativa comum: Baixar `pdcurses.a` e `curses.h`.
-2. Crie uma pasta chamada `pdcurses` dentro da pasta do projeto (`c:/Projeto_IAPG/pdcurses`).
+2. Crie uma pasta chamada `lib/pdcurses` dentro da pasta do projeto.
 3. Coloque os ficheiros `curses.h` e `pdcurses.a` (ou `libpdcurses.a`) dentro dessa pasta.
 4. Execute o script `compile_windows.bat`.
 

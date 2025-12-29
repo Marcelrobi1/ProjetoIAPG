@@ -3,7 +3,7 @@
 
 #include "domino.h"
 
-// Max pieces a player might end up with (unlikely to exceed 28, but safe limit)
+// Máximo de peças que um jogador pode acabar com (improvável exceder 28, mas limite seguro)
 #define MAX_HAND_SIZE 28
 #define PLAYER_NAME_LEN 50
 
@@ -13,7 +13,7 @@ typedef struct {
     DominoPiece hand[MAX_HAND_SIZE];
     int hand_count;
     int score;
-    int is_human; // 1 = human, 0 = AI
+    int is_human; // 1 = humano, 0 = IA
 } Player;
 
 #endif // PLAYER_H

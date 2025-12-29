@@ -2,8 +2,8 @@
 #define CONFIG_H
 
 typedef struct {
-  int spinner_mode; // 0 = none, 1 = first double, 2 = all doubles
-                    // Potential future configs:
+  int spinner_mode; // 0 = nenhum, 1 = primeiro duplo, 2 = todos os duplos
+                    // Configurações futuras potenciais:
                     // int starting_pieces;
                     // int win_score;
 } GameConfig;

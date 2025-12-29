@@ -1,16 +1,16 @@
 #include "storage.h"
 #include <stdio.h>
 
-// Requirement: Escrita em modo binário do histórico dos jogos
-// (historico_jogos.dat). Requirement: Leitura em modo binário do histórico dos
-// jogos. Requirement: Escrita em modo de texto do histórico dos jogos
+// Requisito: Escrita em modo binário do histórico dos jogos
+// (historico_jogos.dat). Requisito: Leitura em modo binário do histórico dos
+// jogos. Requisito: Escrita em modo de texto do histórico dos jogos
 // (historico_jogos.txt).
 
 int save_history_binary(const GameState *game, const char *filename) {
   FILE *f =
       fopen(filename,
-            "ab"); // Append to history? Or overwrite? "histórico" implies list.
-  // We will append this game state.
+            "ab"); // Anexar ao histórico? Ou sobrescrever? "histórico" implica lista.
+  // Vamos anexar este estado do jogo.
   if (!f)
     return 0;
 
@@ -20,15 +20,15 @@ int save_history_binary(const GameState *game, const char *filename) {
 }
 
 int load_history_binary(GameState *game, const char *filename) {
-  // Load last game? Or read all?
-  // Requirement says "Leitura ... do histórico".
-  // For simplicity, let's just allow reading the last one or all.
-  // Implementation: print count or read last.
+  // Carregar último jogo? Ou ler todos?
+  // Requisito diz "Leitura ... do histórico".
+  // Para simplicidade, vamos permitir ler o último ou todos.
+  // Implementação: imprimir contagem ou ler último.
   FILE *f = fopen(filename, "rb");
   if (!f)
     return 0;
 
-  // Seek to end - size
+  // Procurar fim - tamanho
   fseek(f, -((long)sizeof(GameState)), SEEK_END);
   size_t read = fread(game, sizeof(GameState), 1, f);
 

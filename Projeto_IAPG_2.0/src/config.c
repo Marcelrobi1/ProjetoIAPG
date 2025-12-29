@@ -7,16 +7,16 @@
 int load_config(const char *filename, GameConfig *config) {
   FILE *file = fopen(filename, "r");
   if (!file) {
-    // Default values if file missing
+    // Valores padrão se arquivo faltar
     config->spinner_mode = 0;
-    return 0; // File not found
+    return 0; // Arquivo não encontrado
   }
 
   char line[256];
   while (fgets(line, sizeof(line), file)) {
-    // Simple key=value parsing
+    // Análise simples chave=valor
     char *key = strtok(line, "=");
-    char *value = strtok(NULL, "\n"); // Remove newline
+    char *value = strtok(NULL, "\n"); // Remover nova linha
 
     if (key && value) {
       if (strcmp(key, "spinner_mode") == 0) {
