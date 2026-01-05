@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Implementação de carregamento de configuração do jogo
+
 
 int load_config(const char *filename, GameConfig *config) {
   FILE *file = fopen(filename, "r");

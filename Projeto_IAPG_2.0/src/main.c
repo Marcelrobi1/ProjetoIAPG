@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h> // for sleep
 
+// Função principal: loop do menu e jogo
 int main() {
   GameConfig config;
   load_config("config_domino.txt", &config);
@@ -24,21 +25,21 @@ int main() {
       GameState game;
       int is_new_game = (choice == 1);
       if (is_new_game) {
-        // New Game
+        // Novo Jogo
         int mode = show_mode_menu(); // 1=PvAI, 2=PvP
         int num_p = get_player_count();
         int humans = (mode == 1) ? 1 : num_p;
 
         init_game(&game, num_p, humans);
 
-        // Get names for human players
+        // Obter nomes para jogadores humanos
         for (int i = 0; i < num_p; i++) {
           if (game.players[i].is_human) {
             get_player_name(game.players[i].name, i + 1);
           }
         }
       } else {
-        // Load Game
+        // Carregar Jogo
         if (!load_game(&game, "saved_game.dat")) {
           display_message("Nenhum jogo salvo encontrado.");
           napms(1000);
@@ -51,9 +52,9 @@ int main() {
         int p_idx = game.current_player_index;
         Player *p = &game.players[p_idx];
 
-        // Human Turn
+        // Turno Humano
         if (p->is_human) {
-          // Check if reliable moves exist
+          // Verificar se existem jogadas válidas
           int can_move = 0;
           int side_dummy;
           for (int i = 0; i < p->hand_count; i++) {
@@ -71,13 +72,13 @@ int main() {
             if (drew) {
               display_message("Pecou uma peca.");
               napms(500);
-              continue; // Re-eval
+              continue; // Reavaliar
             } else {
               display_message("Baralho vazio. Passou a vez.");
               wait_for_key();
             }
           } else {
-            // Regular input loop
+            // Loop de entrada regular
             int p_idx_input, side;
             int valid_input = get_user_input_move(&p_idx_input, &side);
 
@@ -117,12 +118,12 @@ int main() {
             }
           }
         } else {
-          // AI Turn
+          // Turno IA
           napms(1000);
-          // AI Draw Loop
+          // Loop de pescar IA
           int moved = 0;
           while (!moved) {
-            // Check moves
+            // Verificar jogadas
             int moves_available = 0;
             for (int i = 0; i < p->hand_count; i++) {
               int side_match = 0;
@@ -136,25 +137,24 @@ int main() {
             }
 
             if (!moves_available) {
-              // Try Draw
+              // Tentar pescar
               if (draw_piece(&game, p_idx)) {
                 display_message("IA pescou uma peca.");
                 napms(500);
-                draw_game_state(&game); // Update view to show more cards? (AI
-                                        // cards hidden but count changes)
+                draw_game_state(&game); // Atualizar vista para mostrar mais cartas? (cartas IA ocultas mas contagem muda)
               } else {
                 display_message("IA Passou.");
-                moved = 1; // Force exit
+                moved = 1; // Forçar saída
               }
             }
           }
         }
 
-        // Check Winner
+        // Verificar Vencedor
         if (game.winner_index != -1) {
-          draw_game_state(&game); // Show final
+          draw_game_state(&game); // Mostrar final
           char win_msg[50];
-          // Save history
+          // Salvar histórico
           save_history_binary(&game, "historico_jogos.dat");
           save_history_text(&game, "historico_jogos.txt");
 
@@ -167,7 +167,7 @@ int main() {
           game_running = 0;
         }
 
-        // Next turn
+        // Próximo turno
         if (game_running) {
           game.current_player_index =
               (game.current_player_index + 1) % game.player_count;

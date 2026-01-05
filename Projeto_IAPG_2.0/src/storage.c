@@ -1,6 +1,9 @@
 #include "storage.h"
 #include <stdio.h>
 
+// Implementação de salvamento e carregamento de jogos e histórico
+// Suporta formatos binário e texto para histórico, e binário para estado do jogo
+
 // Requisito: Escrita em modo binário do histórico dos jogos
 // (historico_jogos.dat). Requisito: Leitura em modo binário do histórico dos
 // jogos. Requisito: Escrita em modo de texto do histórico dos jogos

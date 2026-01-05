@@ -4,6 +4,9 @@
 #include <string.h>
 #include <time.h>
 
+// Implementação da lógica do jogo de dominó
+// Inclui inicialização, jogadas, pescar peças, etc.
+
 void init_game(GameState *game, int num_players, int num_humans) {
   game->game_id = (int)time(NULL); // ID simples baseado no tempo
   game->board_count = 0;
@@ -48,8 +51,8 @@ void distribute_pieces(GameState *game) {
   }
 
   // Deslocar baralho
-  // Quick hack: move remaining to front or just update pointer/count?
-  // Since boneyard is array, best to slide down.
+  // Hack rápido: mover restantes para frente ou apenas atualizar ponteiro/contagem?
+  // Como boneyard é array, melhor deslizar para baixo.
   int remaining = 28 - card_idx;
   for (int i = 0; i < remaining; i++) {
     game->boneyard[i] = game->boneyard[card_idx + i];

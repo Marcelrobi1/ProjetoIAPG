@@ -3,6 +3,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Implementação da interface do usuário usando PDCurses
+// Inclui menus, desenho do jogo, entrada do usuário
+
 void init_ui() {
   initscr();
   cbreak();
@@ -53,12 +56,12 @@ void draw_game_state(const GameState *game) {
   clear();
   mvprintw(1, 2, "Jogo #%d - Jogadores: %d", game->game_id, game->player_count);
 
-  // Draw Board
+  // Desenhar Mesa
   mvprintw(3, 2, "Mesa:");
   int x_off = 2;
   int y_off = 4;
   for (int i = 0; i < game->board_count; i++) {
-    // Wrap if too long
+    // Quebrar linha se muito longo
     if (x_off > 70) {
       x_off = 2;
       y_off++;
@@ -67,14 +70,14 @@ void draw_game_state(const GameState *game) {
     x_off += 6;
   }
 
-  // Draw Scores
+  // Desenhar Pontuações
   y_off += 2;
   for (int i = 0; i < game->player_count; i++) {
     mvprintw(y_off, 2 + (i * 20), "%s: %d", game->players[i].name,
              game->players[i].score);
   }
 
-  // Draw Current Player's Hand
+  // Desenhar Mão do Jogador Atual
   int p_idx = game->current_player_index;
   if (game->players[p_idx].is_human) {
     y_off += 2;
@@ -122,10 +125,10 @@ int get_user_input_move(int *piece_idx, int *side) {
   noecho();
 
   if (strcmp(buf, "q") == 0 || strcmp(buf, "Q") == 0) {
-    return 3; // Quit to menu
+    return 3; // Sair para menu
   }
   if (strcmp(buf, "s") == 0 || strcmp(buf, "S") == 0) {
-    return 4; // Save game
+    return 4; // Salvar jogo
   }
 
   int p;
@@ -137,17 +140,17 @@ int get_user_input_move(int *piece_idx, int *side) {
     else if (s == 'R' || s == 'r')
       *side = 2;
     else
-      *side = 1; // default check?
+      *side = 1; // padrão
     return 1;
   } else if (sscanf(buf, "%d", &p) == 1) {
     if (p == 0)
-      return 2; // Pass
+      return 2; // Passar
     *piece_idx = p - 1;
-    *side = 1; // Default Left (User must specify R if needed)
+    *side = 1; // Esquerda por padrão (usuário deve especificar R se necessário)
     return 1;
   }
 
-  return 0; // Invalid
+  return 0; // Inválido
 }
 
 int get_player_count() {

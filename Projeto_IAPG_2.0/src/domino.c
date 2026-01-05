@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+// Implementação de funções para baralho de dominó
+// Inicialização e embaralhamento
+
 
 void init_deck(DominoPiece deck[]) {
   int count = 0;
