@@ -40,14 +40,14 @@ int main() {
       }
       free_save_files(files, count);
     } else if (choice == 1) {
-      // New Game
-      int mode = show_mode_menu(); // 1=PvAI, 2=PvP
+      // Novo Jogo
+      int mode = show_mode_menu(); // 1=Jogador vs IA, 2=Jogador vs Jogador
       int num_p = get_player_count();
       int humans = (mode == 1) ? 1 : num_p;
 
       init_game(&game, num_p, humans);
 
-      // Get names for human players
+      // Obter nomes para jogadores humanos
       for (int i = 0; i < num_p; i++) {
         if (game.players[i].is_human) {
           get_player_name(game.players[i].name, i + 1);
@@ -56,7 +56,7 @@ int main() {
       ready_to_play = 1;
     }
 
-    // Common Game Loop
+    // Ciclo Principal do Jogo
     if (ready_to_play) {
       int game_running = 1;
       while (game_running) {
@@ -65,9 +65,9 @@ int main() {
         int p_idx = game.current_player_index;
         Player *p = &game.players[p_idx];
 
-        // Human Turn
+        // Turno do Humano
         if (p->is_human) {
-          // Check if reliable moves exist
+          // Verificar se existem jogadas possíveis
           int can_move = 0;
           int side_dummy;
           for (int i = 0; i < p->hand_count; i++) {
@@ -85,13 +85,13 @@ int main() {
             if (drew) {
               display_message("Pecou uma peca.");
               napms(500);
-              continue; // Re-eval
+              continue; // Re-avaliar após pescar
             } else {
               display_message("Baralho vazio. Passou a vez.");
               wait_for_key();
             }
           } else {
-            // Regular input loop
+            // Loop normal de entrada do utilizador
             int p_idx_input, side;
             int valid_input = get_user_input_move(&p_idx_input, &side);
 
@@ -135,12 +135,12 @@ int main() {
             }
           }
         } else {
-          // AI Turn
+          // Turno da IA
           napms(1000);
-          // AI Draw Loop
+          // Ciclo de Pesca da IA
           int moved = 0;
           while (!moved) {
-            // Check moves
+            // Verificar movimentos disponíveis
             int moves_available = 0;
             for (int i = 0; i < p->hand_count; i++) {
               int side_match = 0;
@@ -161,16 +161,16 @@ int main() {
                 draw_game_state(&game);
               } else {
                 display_message("IA Passou.");
-                moved = 1; // Force exit
+                moved = 1; // Forçar saída poque não consegue jogar nem pescar
               }
             }
           }
         }
 
-        // Check Winner
+        // Verificar Vencedor
         if (game.winner_index != -1) {
-          draw_game_state(&game); // Show final
-          // Save history
+          draw_game_state(&game); // Mostrar final
+          // Salvar histórico
           save_history_binary(&game, "historico_jogos.dat");
           save_history_text(&game, "historico_jogos.txt");
 
@@ -183,7 +183,7 @@ int main() {
           game_running = 0;
         }
 
-        // Next turn
+        // Próximo turno
         if (game_running) {
           game.current_player_index =
               (game.current_player_index + 1) % game.player_count;

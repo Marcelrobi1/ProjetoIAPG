@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 int load_config(const char *filename, GameConfig *config) {
   FILE *file = fopen(filename, "r");
   if (!file) {
@@ -26,5 +25,5 @@ int load_config(const char *filename, GameConfig *config) {
   }
 
   fclose(file);
-  return 1; // Success
+  return 1; // Sucesso
 }
