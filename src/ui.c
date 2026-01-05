@@ -27,7 +27,7 @@ int show_main_menu() {
   clear();
   mvprintw(2, 2, "JOGO DE DOMINO");
   mvprintw(4, 2, "1. Iniciar Novo Jogo");
-  mvprintw(5, 2, "2. Carregar Jogo (Nao Impl)");
+  mvprintw(5, 2, "2. Carregar Jogo Salvo");
   mvprintw(6, 2, "3. Regras/Ajuda");
   mvprintw(7, 2, "4. Sair");
   mvprintw(9, 2, "Escolha: ");
