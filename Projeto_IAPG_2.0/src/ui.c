@@ -27,7 +27,7 @@ int show_main_menu() {
   clear();
   mvprintw(2, 2, "JOGO DE DOMINO");
   mvprintw(4, 2, "1. Iniciar Novo Jogo");
-  mvprintw(5, 2, "2. Carregar Jogo (Nao Impl)");
+  mvprintw(5, 2, "2. Carregar Jogo");
   mvprintw(6, 2, "3. Regras/Ajuda");
   mvprintw(7, 2, "4. Sair");
   mvprintw(9, 2, "Escolha: ");
@@ -116,13 +116,16 @@ void wait_for_key() {
 int get_user_input_move(int *piece_idx, int *side) {
   echo();
   mvprintw(LINES - 3, 2,
-           "Insira jogada (Peca# Lado[L/R]) (ex: 1 L), 0 para passar, 'q' para menu: ");
+           "Insira jogada (Peca# Lado[L/R]) (ex: 1 L), 0 para passar, 'q' para menu, 's' para salvar: ");
   char buf[10];
   getnstr(buf, 9);
   noecho();
 
   if (strcmp(buf, "q") == 0 || strcmp(buf, "Q") == 0) {
     return 3; // Quit to menu
+  }
+  if (strcmp(buf, "s") == 0 || strcmp(buf, "S") == 0) {
+    return 4; // Save game
   }
 
   int p;

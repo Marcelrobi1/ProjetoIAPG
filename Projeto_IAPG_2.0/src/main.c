@@ -20,23 +20,31 @@ int main() {
       running = 0;
     } else if (choice == 3) {
       show_rules();
-    } else if (choice == 1) {
-      // New Game
-      int mode = show_mode_menu(); // 1=PvAI, 2=PvP
-      int num_p = get_player_count();
-      int humans = (mode == 1) ? 1 : num_p;
-
+    } else if (choice == 1 || choice == 2) {
       GameState game;
-      init_game(&game, num_p, humans);
+      int is_new_game = (choice == 1);
+      if (is_new_game) {
+        // New Game
+        int mode = show_mode_menu(); // 1=PvAI, 2=PvP
+        int num_p = get_player_count();
+        int humans = (mode == 1) ? 1 : num_p;
 
-      // Get names for human players
-      for (int i = 0; i < num_p; i++) {
-        if (game.players[i].is_human) {
-          get_player_name(game.players[i].name, i + 1);
+        init_game(&game, num_p, humans);
+
+        // Get names for human players
+        for (int i = 0; i < num_p; i++) {
+          if (game.players[i].is_human) {
+            get_player_name(game.players[i].name, i + 1);
+          }
         }
-      }
-
-      int game_running = 1;
+      } else {
+        // Load Game
+        if (!load_game(&game, "saved_game.dat")) {
+          display_message("Nenhum jogo salvo encontrado.");
+          napms(1000);
+          continue;
+        }
+      }      int game_running = 1;
       while (game_running) {
         draw_game_state(&game);
 
@@ -77,6 +85,14 @@ int main() {
               display_message("Voltando ao menu...");
               napms(500);
               game_running = 0;
+              continue;
+            } else if (valid_input == 4) {
+              if (save_game(&game, "saved_game.dat")) {
+                display_message("Jogo salvo.");
+              } else {
+                display_message("Erro ao salvar jogo.");
+              }
+              wait_for_key();
               continue;
             } else if (valid_input == 2) {
               display_message("Voce tem jogadas validas! Nao pode passar.");

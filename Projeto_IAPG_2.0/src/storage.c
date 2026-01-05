@@ -57,3 +57,23 @@ int save_history_text(const GameState *game, const char *filename) {
   fclose(f);
   return 1;
 }
+
+int save_game(const GameState *game, const char *filename) {
+  FILE *f = fopen(filename, "wb");
+  if (!f)
+    return 0;
+
+  fwrite(game, sizeof(GameState), 1, f);
+  fclose(f);
+  return 1;
+}
+
+int load_game(GameState *game, const char *filename) {
+  FILE *f = fopen(filename, "rb");
+  if (!f)
+    return 0;
+
+  size_t read = fread(game, sizeof(GameState), 1, f);
+  fclose(f);
+  return read == 1;
+}

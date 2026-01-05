@@ -60,3 +60,9 @@ Vencedor: robi
 robi Pontos: 0
 Jogador 2 Pontos: 0
 --------------------------
+ID do Jogo: 1767650996
+Indice Vencedor: 0
+Vencedor: robi
+robi Pontos: 0
+Jogador 2 Pontos: 15
+--------------------------
