@@ -10,7 +10,7 @@
 // (historico_jogos.txt).
 
 int save_history_binary(const GameState *game, const char *filename) {
-  FILE *f = fopen(filename, "ab"); // Append to history
+  FILE *f = fopen(filename, "ab"); // Anexar ao histórico
   if (!f)
     return 0;
   fwrite(game, sizeof(GameState), 1, f);
@@ -47,10 +47,10 @@ int save_history_text(const GameState *game, const char *filename) {
   return 1;
 }
 
-// --- Named Saves Implementation ---
+// --- Implementação de Saves Nomeados ---
 
 int save_game_state(const GameState *game, const char *filename) {
-  FILE *f = fopen(filename, "wb"); // Overwrite for specific save file
+  FILE *f = fopen(filename, "wb"); // Sobrescrever para arquivo específico
   if (!f)
     return 0;
   fwrite(game, sizeof(GameState), 1, f);
@@ -84,14 +84,14 @@ int list_save_files(char ***filenames) {
 
   while ((dir = readdir(d)) != NULL) {
     if (strstr(dir->d_name, ".sav")) {
-      // Only if ends with .sav (basic check)
+      // Apenas se terminar em .sav (verificação básica)
       char *dot = strrchr(dir->d_name, '.');
       if (dot && strcmp(dot, ".sav") == 0) {
         if (count >= capacity) {
           capacity *= 2;
           char **temp = realloc(*filenames, capacity * sizeof(char *));
           if (!temp) {
-            // cleanup
+            // limpar
             free_save_files(*filenames, count);
             closedir(d);
             return 0;

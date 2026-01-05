@@ -123,29 +123,29 @@ int get_user_input_move(int *piece_idx, int *side) {
   noecho();
 
   if (strcmp(buf, "q") == 0 || strcmp(buf, "Q") == 0) {
-    return 3; // Quit to menu
+    return 3; // Sair para menu
   }
 
   int p;
   char s;
   if (sscanf(buf, "%d %c", &p, &s) == 2) {
-    *piece_idx = p - 1; // 0-indexed
+    *piece_idx = p - 1; // Índice base 0
     if (s == 'L' || s == 'l')
       *side = 1;
     else if (s == 'R' || s == 'r')
       *side = 2;
     else
-      *side = 1; // default check?
+      *side = 1; // verificação padrão?
     return 1;
   } else if (sscanf(buf, "%d", &p) == 1) {
     if (p == 0)
-      return 2; // Pass
+      return 2; // Passar
     *piece_idx = p - 1;
-    *side = 1; // Default Left (User must specify R if needed)
+    *side = 1; // Padrão Esquerda (Utilizador deve especificar R se necessário)
     return 1;
   }
 
-  return 0; // Invalid
+  return 0; // Inválido
 }
 
 int get_player_count() {
