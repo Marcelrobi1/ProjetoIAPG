@@ -1,5 +1,6 @@
-#include "player.h"
+#include "../include/player.h"
 
-// Atualmente nenhuma função específica do jogador está separada,
-// mas mantendo arquivo para requisitos de estrutura do projeto.
-// Expansão futura: init_player, print_hand, etc.
+// Arquivo para funções relacionadas aos jogadores.
+// Atualmente, não há funções específicas implementadas.
+// Futuramente, pode incluir: init_player, print_hand, etc.
+// A estrutura Player é definida em player.h.

@@ -1,8 +1,17 @@
-#include "config.h"
+#include "../include/config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+// Função para carregar configurações do jogo de arquivo.
+
+// load_config: Carrega configurações de "config_domino.txt".
+// Passos:
+// 1. Abre arquivo para leitura.
+// 2. Se não existir, usa valores padrão.
+// 3. Parseia linhas chave=valor.
+// 4. Define spinner_mode.
+// 5. Fecha arquivo.
 int load_config(const char *filename, GameConfig *config) {
   FILE *file = fopen(filename, "r");
   if (!file) {

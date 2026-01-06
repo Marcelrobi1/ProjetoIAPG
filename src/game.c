@@ -1,9 +1,20 @@
-#include "game.h"
+#include "../include/game.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+// Funções para gerenciar o estado do jogo de dominó.
+// Inclui inicialização, distribuição de peças, verificação de jogadas,
+// execução de jogadas, cálculo de pontuação e pescar peças.
+
+// init_game: Inicializa um novo estado de jogo.
+// Passos:
+// 1. Define ID do jogo baseado no tempo.
+// 2. Inicializa tabuleiro vazio.
+// 3. Cria e embaralha o baralho (boneyard).
+// 4. Inicializa jogadores com nomes padrão e marca humanos/IA.
+// 5. Distribui 5 peças para cada jogador.
 void init_game(GameState *game, int num_players, int num_humans) {
   game->game_id = (int)time(NULL); // ID simples baseado no tempo
   game->board_count = 0;
@@ -26,15 +37,16 @@ void init_game(GameState *game, int num_players, int num_humans) {
     game->players[i].hand_count = 0;
     game->players[i].score = 0;
     game->players[i].is_human = (i < num_humans);
-    // O requisito do utilizador diz: "escolher a quantidade de jogadores".
-    // "não quero jogar contra uma inteligência generativa mas sim com outra
-    // pessoa". Então, se 2 jogadores selecionados, ambos humanos (dependendo do
-    // modo). Se selecionado Jogador vs IA (num_humans=1), outros são IA.
+
   }
 
   distribute_pieces(game);
 }
 
+// distribute_pieces: Distribui peças do baralho para os jogadores.
+// Passos:
+// 1. Dá 5 peças para cada jogador do topo do baralho.
+// 2. Remove essas peças do baralho, deslocando o restante para o início.
 void distribute_pieces(GameState *game) {
   // Distribuir 5 peças para cada jogador
   int card_idx = 0;
@@ -54,6 +66,11 @@ void distribute_pieces(GameState *game) {
   game->boneyard_count = remaining;
 }
 
+// can_play_piece: Verifica se uma peça pode ser jogada no tabuleiro atual.
+// Passos:
+// 1. Se tabuleiro vazio, qualquer peça é válida.
+// 2. Verifica se side1 ou side2 da peça corresponde às extremidades esquerda ou direita.
+// 3. Retorna 1 se válida, e define side_to_match indicando possibilidades (1=esquerda, 2=direita, 3=ambas).
 int can_play_piece(const GameState *game, DominoPiece piece,
                    int *side_to_match) {
   // Se o tabuleiro estiver vazio, qualquer peça é válida
@@ -88,6 +105,15 @@ int can_play_piece(const GameState *game, DominoPiece piece,
   return valid > 0;
 }
 
+// play_piece: Executa uma jogada, colocando uma peça no tabuleiro.
+// Passos:
+// 1. Valida a jogada (assumindo pré-validação).
+// 2. Orienta a peça corretamente baseada no lado (esquerda/direita).
+// 3. Insere a peça no tabuleiro (deslocando para esquerda se necessário).
+// 4. Atualiza extremidades do tabuleiro.
+// 5. Remove a peça da mão do jogador.
+// 6. Calcula e adiciona pontuação se aplicável.
+// 7. Verifica se o jogador venceu (mão vazia).
 int play_piece(GameState *game, int player_idx, int piece_idx, int side) {
   // lado: 1 = esquerda, 2 = direita
   Player *p = &game->players[player_idx];
@@ -184,17 +210,17 @@ int play_piece(GameState *game, int player_idx, int piece_idx, int side) {
   // Verificar vitória
   if (p->hand_count == 0) {
     game->winner_index = player_idx;
-    // Adicionar pips dos oponentes à pontuação? (Regra Muggins às vezes faz
-    // isso) Definição do problema diz: "Ganha o jogador que primeiro chegar aos
-    // 61 pontos". Também "A peça que um jogador joga... senão tem que ir
-    // pescar". Geralmente, terminar rodada concede pontos. Requisito não
-    // detalha explicitamente pontuação de fim de rodada além de "Ganha... 61
-    // pontos". Mas Five-Up geralmente concede pontos durante jogo.
+
   }
 
   return 1;
 }
 
+// calculate_score: Calcula pontuação baseada nas extremidades abertas (regra Muggins).
+// Passos:
+// 1. Soma os valores das extremidades.
+// 2. Para duplos, conta o valor total.
+// 3. Se a soma for múltiplo de 5, retorna a pontuação; senão, 0.
 int calculate_score(const GameState *game) {
   if (game->board_count == 0)
     return 0;
@@ -235,6 +261,12 @@ int calculate_score(const GameState *game) {
   return 0;
 }
 
+// draw_piece: Permite a um jogador pescar uma peça do baralho.
+// Passos:
+// 1. Verifica se o baralho não está vazio e a mão não está cheia.
+// 2. Adiciona a peça do topo do baralho à mão do jogador.
+// 3. Remove a peça do baralho, deslocando o restante.
+// 4. Retorna 1 se sucesso, 0 se falha.
 int draw_piece(GameState *game, int player_idx) {
   if (game->boneyard_count == 0)
     return 0; // Vazio

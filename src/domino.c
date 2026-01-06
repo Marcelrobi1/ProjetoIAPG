@@ -1,7 +1,13 @@
-#include "domino.h"
+#include "../include/domino.h"
 #include <stdlib.h>
 #include <time.h>
 
+// Funções para gerenciar peças de dominó.
+
+// init_deck: Inicializa o baralho com todas as 28 peças de dominó (0-0 a 6-6).
+// Passos:
+// 1. Para cada combinação i,j onde i <= j (0 a 6), cria uma peça com side1=i, side2=j.
+// 2. Marca como duplo se i==j.
 
 void init_deck(DominoPiece deck[]) {
   int count = 0;

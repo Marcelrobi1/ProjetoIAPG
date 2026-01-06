@@ -1,14 +1,18 @@
-#include "storage.h"
+#include "../include/storage.h"
 #include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// Requisito: Escrita em modo binário do histórico dos jogos
-// (historico_jogos.dat). Requisito: Leitura em modo binário do histórico dos
-// jogos. Requisito: Escrita em modo de texto do histórico dos jogos
-// (historico_jogos.txt).
+// Funções para salvar e carregar estados de jogo e histórico.
+// Suporta salvamento binário e textual do histórico, e saves nomeados.
 
+// save_history_binary: Salva o estado do jogo no histórico binário (anexa).
+// Passos:
+// 1. Abre arquivo em modo append binário.
+// 2. Escreve a estrutura GameState.
+// 3. Fecha arquivo.
+// 4. Retorna 1 se sucesso, 0 se erro.
 int save_history_binary(const GameState *game, const char *filename) {
   FILE *f = fopen(filename, "ab"); // Anexar ao histórico
   if (!f)
@@ -18,6 +22,13 @@ int save_history_binary(const GameState *game, const char *filename) {
   return 1;
 }
 
+// load_history_binary: Carrega o último jogo do histórico binário.
+// Passos:
+// 1. Abre arquivo em modo leitura binária.
+// 2. Posiciona no final menos o tamanho de GameState.
+// 3. Lê a estrutura.
+// 4. Fecha arquivo.
+// 5. Retorna 1 se sucesso, 0 se erro.
 int load_history_binary(GameState *game, const char *filename) {
   FILE *f = fopen(filename, "rb");
   if (!f)
@@ -28,6 +39,12 @@ int load_history_binary(GameState *game, const char *filename) {
   return read == 1;
 }
 
+// save_history_text: Salva resumo textual do jogo no histórico (anexa).
+// Passos:
+// 1. Abre arquivo em modo append texto.
+// 2. Imprime ID, vencedor, pontuações.
+// 3. Fecha arquivo.
+// 4. Retorna 1 se sucesso, 0 se erro.
 int save_history_text(const GameState *game, const char *filename) {
   FILE *f = fopen(filename, "a");
   if (!f)
@@ -58,6 +75,12 @@ int save_game_state(const GameState *game, const char *filename) {
   return 1;
 }
 
+// load_game_state: Carrega o estado do jogo de arquivo binário nomeado.
+// Passos:
+// 1. Abre arquivo em modo leitura binária.
+// 2. Lê a estrutura GameState.
+// 3. Fecha arquivo.
+// 4. Retorna 1 se sucesso, 0 se erro.
 int load_game_state(GameState *game, const char *filename) {
   FILE *f = fopen(filename, "rb");
   if (!f)
@@ -67,6 +90,12 @@ int load_game_state(GameState *game, const char *filename) {
   return read == 1;
 }
 
+// list_save_files: Lista arquivos de save (.sav) no diretório atual.
+// Passos:
+// 1. Abre diretório atual.
+// 2. Itera sobre arquivos, filtra .sav.
+// 3. Aloca array de strings para nomes.
+// 4. Retorna contagem e array.
 int list_save_files(char ***filenames) {
   DIR *d;
   struct dirent *dir;
@@ -107,6 +136,10 @@ int list_save_files(char ***filenames) {
   return count;
 }
 
+// free_save_files: Libera memória alocada para lista de saves.
+// Passos:
+// 1. Para cada string, libera.
+// 2. Libera o array.
 void free_save_files(char **filenames, int count) {
   if (!filenames)
     return;

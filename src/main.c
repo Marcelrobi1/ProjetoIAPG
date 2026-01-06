@@ -1,17 +1,39 @@
-#include "config.h"
-#include "game.h"
-#include "storage.h"
-#include "ui.h"
-#include <curses.h>
+#include "../include/config.h"
+#include "../include/game.h"
+#include "../include/storage.h"
+#include "../include/ui.h"
+#include "../lib/pdcurses/PDCurses-3.9/curses.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> // for sleep
 
+// Função principal do programa.
+// Passos:
+// 1. Carrega a configuração do jogo a partir do arquivo "config_domino.txt".
+// 2. Inicializa a interface do usuário (UI) usando PDCurses.
+// 3. Entra em um loop principal onde exibe o menu principal e processa as escolhas do usuário:
+//    - Novo jogo: Permite configurar e iniciar um novo jogo.
+//    - Carregar jogo: Lista e carrega jogos salvos.
+//    - Regras: Exibe as regras do jogo.
+//    - Sair: Encerra o programa.
+// 4. Para um novo jogo:
+//    - Seleciona o modo (vs IA ou vs Jogador).
+//    - Define o número de jogadores.
+//    - Inicializa o estado do jogo.
+//    - Solicita nomes para jogadores humanos.
+//    - Entra no loop do jogo, alternando turnos entre jogadores humanos e IA.
+// 5. No loop do jogo:
+//    - Desenha o estado atual do jogo.
+//    - Para jogadores humanos: Verifica se podem jogar, permite entrada de jogadas ou pescar/pegar peças.
+//    - Para IA: Simula jogadas automaticamente.
+//    - Verifica condições de vitória após cada jogada.
+//    - Salva o histórico do jogo ao final.
+// 6. Fecha a UI ao sair.
 int main() {
   GameConfig config;
-  load_config("config_domino.txt", &config);
+  load_config("config_domino.txt", &config); // Carrega configurações do arquivo
 
-  init_ui();
+  init_ui(); // Inicializa a interface curses
 
   int running = 1;
   while (running) {

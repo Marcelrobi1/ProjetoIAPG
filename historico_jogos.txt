@@ -1,0 +1,25 @@
+ID do Jogo: 1767684712
+Indice Vencedor: 0
+Vencedor: robi
+robi Pontos: 0
+Jogador 2 Pontos: 15
+--------------------------
+ID do Jogo: 1767685266
+Indice Vencedor: 0
+Vencedor: robi
+robi Pontos: 0
+Jogador 2 Pontos: 30
+--------------------------
+ID do Jogo: 1767687245
+Indice Vencedor: 0
+Vencedor: robi
+robi Pontos: 35
+Jogador 2 Pontos: 15
+--------------------------
+ID do Jogo: 1767688250
+Indice Vencedor: 0
+Vencedor: robi
+robi Pontos: 5
+Jogador 2 Pontos: 0
+Jogador 3 Pontos: 20
+--------------------------

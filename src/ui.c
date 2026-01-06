@@ -1,8 +1,16 @@
-#include "ui.h"
-#include <curses.h>
+#include "../include/ui.h"
+#include "../lib/pdcurses/PDCurses-3.9/curses.h"
 #include <stdlib.h>
 #include <string.h>
 
+// Funções para gerenciar a interface do usuário usando PDCurses.
+// Inclui inicialização, menus, desenho do jogo, entrada do usuário.
+
+// init_ui: Inicializa a biblioteca curses para o jogo.
+// Passos:
+// 1. Inicia curses com initscr.
+// 2. Configura modos: cbreak, noecho, keypad.
+// 3. Inicia cores e define pares de cores para números e destaques.
 void init_ui() {
   initscr();
   cbreak();
@@ -23,6 +31,11 @@ void init_ui() {
 
 void close_ui() { endwin(); }
 
+// show_main_menu: Exibe o menu principal e retorna a escolha do usuário.
+// Passos:
+// 1. Limpa a tela.
+// 2. Imprime opções: Novo Jogo, Carregar, Regras, Sair.
+// 3. Aguarda entrada e retorna o dígito escolhido.
 int show_main_menu() {
   clear();
   mvprintw(2, 2, "JOGO DE DOMINO");
@@ -37,6 +50,13 @@ int show_main_menu() {
   return ch - '0';
 }
 
+// draw_domino: Desenha uma peça de dominó na posição especificada.
+// Passos:
+// 1. Imprime '['.
+// 2. Imprime side1 com cor correspondente.
+// 3. Imprime '|'.
+// 4. Imprime side2 com cor correspondente.
+// 5. Imprime ']'.
 void draw_domino(int y, int x, DominoPiece p) {
   mvprintw(y, x, "[");
   attron(COLOR_PAIR(p.side1 + 3));
@@ -49,6 +69,14 @@ void draw_domino(int y, int x, DominoPiece p) {
   printw("]");
 }
 
+// draw_game_state: Desenha o estado completo do jogo na tela.
+// Passos:
+// 1. Limpa a tela.
+// 2. Imprime ID do jogo e número de jogadores.
+// 3. Desenha o tabuleiro (mesa) com peças.
+// 4. Imprime pontuações dos jogadores.
+// 5. Se jogador atual for humano, mostra sua mão.
+// 6. Se IA, mostra mensagem de pensamento.
 void draw_game_state(const GameState *game) {
   clear();
   mvprintw(1, 2, "Jogo #%d - Jogadores: %d", game->game_id, game->player_count);
@@ -100,6 +128,12 @@ void draw_game_state(const GameState *game) {
   refresh();
 }
 
+// display_message: Exibe uma mensagem na parte inferior da tela.
+// Passos:
+// 1. Move para a linha de mensagens.
+// 2. Limpa a linha.
+// 3. Imprime a mensagem.
+// 4. Atualiza a tela.
 void display_message(const char *msg) {
   move(LINES - 2, 2);
   clrtoeol();
@@ -107,12 +141,24 @@ void display_message(const char *msg) {
   refresh();
 }
 
+// wait_for_key: Pausa aguardando entrada do usuário.
+// Passos:
+// 1. Imprime instrução para pressionar tecla.
+// 2. Aguarda getch().
 void wait_for_key() {
   mvprintw(LINES - 1, 2, "Pressione qualquer tecla...");
   refresh();
   getch();
 }
 
+// get_user_input_move: Solicita entrada de jogada do usuário.
+// Passos:
+// 1. Ativa echo.
+// 2. Imprime prompt para entrada (Peça# Lado).
+// 3. Lê string.
+// 4. Desativa echo.
+// 5. Parseia entrada: 'q' para sair, '0' para passar, ou 'num lado'.
+// 6. Retorna código: 1=valido, 2=passar invalido, 3=sair.
 int get_user_input_move(int *piece_idx, int *side) {
   echo();
   mvprintw(LINES - 3, 2,
@@ -148,6 +194,13 @@ int get_user_input_move(int *piece_idx, int *side) {
   return 0; // Inválido
 }
 
+// get_player_count: Solicita o número de jogadores.
+// Passos:
+// 1. Ativa echo.
+// 2. Imprime prompt.
+// 3. Lê string e converte para int.
+// 4. Limita entre 2 e 4.
+// 5. Desativa echo.
 int get_player_count() {
   echo();
   mvprintw(LINES - 5, 2, "Numero de jogadores (2-4): ");
@@ -162,6 +215,11 @@ int get_player_count() {
   return n;
 }
 
+// show_mode_menu: Exibe menu de seleção de modo de jogo.
+// Passos:
+// 1. Limpa a tela.
+// 2. Imprime opções: Jogador vs IA, Jogador vs Jogador.
+// 3. Aguarda entrada e retorna escolha.
 int show_mode_menu() {
   clear();
   mvprintw(2, 2, "MODO DE JOGO");
@@ -172,6 +230,13 @@ int show_mode_menu() {
   return ch - '0';
 }
 
+// get_player_name: Solicita nome para um jogador.
+// Passos:
+// 1. Limpa a tela.
+// 2. Imprime prompt com número do jogador.
+// 3. Ativa echo e lê string.
+// 4. Desativa echo.
+// 5. Se vazio, define como "Jogador".
 void get_player_name(char *name, int player_num) {
   clear();
   mvprintw(2, 2, "Nome do Jogador %d: ", player_num);
